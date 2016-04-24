@@ -15,6 +15,9 @@ create table classified_jobs as
 create index classified_jobs_job_id_index on classified_jobs (job_id);
 analyse classified_jobs;
 
+drop table if exists search_impressions_clicks;
+
+create table search_impressions_clicks as
 select
 	s.user_id,
 	s.search_id,
@@ -25,7 +28,7 @@ select
 	s.query,
 	s.mobile_user,
 	s.created_at as time_of_search,
-	'impression' as event_type,
+	case when i.job_id is null then 'failed_search'::text else 'impression'::text end  as event_type,
 	i.job_id,
 	i.session_id,
 	i.search_ranking,
@@ -47,7 +50,7 @@ select
 	s.query,
 	s.mobile_user,
 	s.created_at as time_of_search,
-	'click' as event_type,
+	case when c.job_id is null then 'failed_search'::text else 'click'::text end  as event_type,
 	c.job_id,
 	c.session_id,
 	null as search_ranking,
@@ -57,4 +60,10 @@ from
 left join
 	job_clicks_all as c
 on
-	s.search_id = c.search_id and s.user_id = c.user_id
+	s.search_id = c.search_id and s.user_id = c.user_id;
+
+create index search_impressions_clicks_search_id_index on search_impressions_clicks(search_id);
+create index search_impressions_clicks_job_id_index on search_impressions_clicks(job_id);
+create index search_impressions_clicks_event_type_index on search_impressions_clicks(event_type);
+
+analyse search_impressions_clicks;
