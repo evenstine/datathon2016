@@ -120,39 +120,45 @@ create index search_impressions_clicks_event_type_index on search_impressions_cl
 
 analyse search_impressions_clicks;
 
-select
-	user_id,
-	search_id
-	raw_location
-	location_id
-	latitude
-	longitude
-	query
-	mobile_user
-	time_of_search
-	event_type
-	event_search_id
-	job_id
-	session_id
-	search_ranking
-	time_of_event
+create table jobs_search_impressins_clicks as select
+	s.user_id,
+	s.search_id,
+	s.raw_location as search_raw_location,
+	s.location_id as sesarch_location_id,
+	s.latitude as search_latitude,
+	s.longitude as search_longitude,
+	s.query as search_query,
+	s.mobile_user,
+	s.time_of_search,
+	s.event_type,
+	s.event_search_id,
+	s.session_id,
+	s.search_ranking,
+	s.time_of_event,
+	c.job_id,
+	c.title as job_title,
+	c.raw_location as job_raw_location,
+	c.location_id as job_location_id,
+	c.subclasses as job_subclasses,
+	c.salary_type as job_salary_type,
+	c.salary_min as job_salary_min,
+	c.salary_max as job_salary_max,
+	c.raw_job_type,
+	c.abstract as job_abstract,
+	c.segment as job_segment,
+	c.hat,
+	c.class_description as job_class_description,
+	c.sub_class_description as job_sub_class_description
 from
-	search_impressions_clicks
+	search_impressions_clicks as s
+left join
+	classified_jobs as c
+on
+	s.job_id = c.job_id;
 
-select
-	job_id
-	title
-	raw_location
-	location_id
-	subclasses
-	salary_type
-	salary_min
-	salary_max
-	raw_job_type
-	abstract
-	segment
-	hat
-	class_description
-	sub_class_description
-from
-	classified_jobs
+create index jobs_search_impressins_clicks_user_id_index on jobs_search_impressins_clicks(user_id);
+create index jobs_search_impressins_clicks_search_id_index on jobs_search_impressins_clicks(search_id);
+create index jobs_search_impressins_clicks_job_id_index on jobs_search_impressins_clicks(job_id);
+
+analyse jobs_search_impressins_clicks;
+
