@@ -119,3 +119,40 @@ create index search_impressions_clicks_job_id_index on search_impressions_clicks
 create index search_impressions_clicks_event_type_index on search_impressions_clicks(event_type);
 
 analyse search_impressions_clicks;
+
+select
+	user_id,
+	search_id
+	raw_location
+	location_id
+	latitude
+	longitude
+	query
+	mobile_user
+	time_of_search
+	event_type
+	event_search_id
+	job_id
+	session_id
+	search_ranking
+	time_of_event
+from
+	search_impressions_clicks
+
+select
+	job_id
+	title
+	raw_location
+	location_id
+	subclasses
+	salary_type
+	salary_min
+	salary_max
+	raw_job_type
+	abstract
+	segment
+	hat
+	class_description
+	sub_class_description
+from
+	classified_jobs
